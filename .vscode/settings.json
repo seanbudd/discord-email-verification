@@ -1,0 +1,16 @@
+{
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.eol": "\n",
+    "editor.renderWhitespace": "all",
+    "editor.tabCompletion": "on",
+    "editor.trimAutoWhitespace": true,
+    "editor.insertSpaces": true,
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "editor.formatOnSave": true,
+    "prettier.printWidth": 120
+}

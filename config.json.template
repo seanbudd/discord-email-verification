@@ -1,0 +1,11 @@
+{
+    "DISCORD_LOGIN_API_TOKEN": "",
+    "DATABASE_STRING": "",
+    "FROM_EMAIL": "",
+    "EMAIL_SUBJECT": "Discord Verification",
+    "ROLE_NAME": "",
+    "GUILD_ID": "",
+    "WELCOME_CHANNEL_ID": "",
+    "EMAIL_REGEX": ".*@.*",
+    "SMPT_JS_LOGIN_TOKEN": ""
+}
