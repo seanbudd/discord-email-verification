@@ -1,6 +1,6 @@
 # Info
 
-Built on KeyV and discord.js
+Built on [SMPT.js](https://www.smtpjs.com/), [KeyV](https://github.com/lukechilds/keyv) and [discord.js](https://discord.js.org/#/)
 
 # Setup
 
@@ -13,7 +13,7 @@ Run `npm install .`
 Make a copy of config.json.template named config.json
 
 
-```json
+```js
 {
     "DISCORD_LOGIN_API_TOKEN": "", // https://discordjs.guide/preparations/setting-up-a-bot-application.html#your-token
     "DATABASE_STRING": "", // any database string that keyv https://discordjs.guide/keyv/#installation
