@@ -29,7 +29,7 @@ client.on('message', message => {
     } else {
       message.channel.send('Hey ' + message.author.username + " you aren't a verified user. Send '!verify' to begin")
     }
-  } else if (message.channel instanceof DMChannel) {
+  } else if (message.channel.guild == null) {
     if (new RegExp(CONFIG.EMAIL_REGEX).test(text)) {
       let email_address = text
       if (isMember(email_address)) {
