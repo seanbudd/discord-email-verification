@@ -28,8 +28,8 @@ client.on('message', message => {
   let text = message.content.trim()
   if (message.channel.id === CONFIG.WELCOME_CHANNEL_ID) {
     if (message.content === '!verify') {
-      message.author.createDM().then(dmchannel => dmchannel.send('Reply with your student email for verification'))
-    } else {
+      message.author.createDM().then(dmchannel => dmchannel.send('Reply with your email for verification'))
+    } else if (message.type === 'GUILD_MEMBER_JOIN') {
       message.channel.send('Hey ' + message.author.username + " you aren't a verified user. Send '!verify' to begin")
     }
   } else if (message.channel.guild == null) {
@@ -39,7 +39,9 @@ client.on('message', message => {
         let code = makeid(6)
         code_email_temp.set(code, email_address, 10 * 60 * 1000)
         code_discord_temp.set(code, message.author.id, 10 * 60 * 1000)
-        sendEmail(email_address, code).then(message.channel.send('Check your email now!'))
+        sendEmail(email_address, code).then(
+          message.channel.send('Check your email now! Reply with the code we sent you')
+        )
       } else {
         message.channel.send('Hey ' + message.author.username + " you aren't a verified user. Sign up so you can join")
       }
