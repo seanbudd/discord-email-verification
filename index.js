@@ -12,7 +12,6 @@ const code_email_temp = new Keyv(CONFIG.DATABASE_STRING, { namespace: 'code_emai
 const code_discord_temp = new Keyv(CONFIG.DATABASE_STRING, { namespace: 'code_discord_temp' })
 const ALPHANUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
-discord_email.clear()
 code_discord_temp.clear()
 code_email_temp.clear()
 
