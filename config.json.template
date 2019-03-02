@@ -6,6 +6,7 @@
     "ROLE_NAME": "",
     "GUILD_ID": "",
     "WELCOME_CHANNEL_ID": "",
+    "MEMBER_JOIN_MESSAGE": "",
     "EMAIL_REGEX": ".*@.*",
     "SMPT_JS_LOGIN_TOKEN": ""
 }
