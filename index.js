@@ -22,6 +22,9 @@ client.once('ready', () => {
 client.login(CONFIG.DISCORD_LOGIN_API_TOKEN).then()
 
 client.on('message', message => {
+  if (message.author.bot) {
+    return
+  }
   let text = message.content.trim()
   if (message.channel.id === CONFIG.WELCOME_CHANNEL_ID) {
     if (message.content === '!verify') {
