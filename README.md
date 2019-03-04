@@ -25,11 +25,10 @@ Make a copy of config.json.template named config.json. You can alternatively use
     "MEMBER_JOIN_MESSAGE": "", // the message you want people to receive if they aren't in your members.json
     "EMAIL_REGEX": ".*@.*", // regex you want to verify emails before sending, could be domain specific
     "SMPT_JS_LOGIN_TOKEN": "", // https://www.smtpjs.com/
-    "CRYPTO_JSON" : { //https://www.npmjs.com/package/crypto-json to encrypt member data, optional
-        "ALGORITHM": "",
-        "ENCODING": "",
-        "MEMBER_ENCRYPT_KEY": ""
-    }
+    // https://www.npmjs.com/package/crypto-json to encrypt member data, optional
+    "CRYPTO_JSON.ALGORITHM": "aes256",
+    "CRYPTO_JSON.ENCODING": "hex",
+    "CRYPTO_JSON.MEMBER_ENCRYPT_KEY": ""
 }
 
 ```

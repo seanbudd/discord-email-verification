@@ -9,9 +9,7 @@
     "MEMBER_JOIN_MESSAGE": "",
     "EMAIL_REGEX": ".*@.*",
     "SMPT_JS_LOGIN_TOKEN": "",
-    "CRYPTO_JSON" : {
-        "ALGORITHM": "",
-        "ENCODING": "",
-        "MEMBER_ENCRYPT_KEY": ""
-    }
+    "CRYPTO_JSON.ALGORITHM": "aes256",
+    "CRYPTO_JSON.ENCODING": "hex",
+    "CRYPTO_JSON.MEMBER_ENCRYPT_KEY": ""
 }
