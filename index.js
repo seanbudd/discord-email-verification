@@ -7,9 +7,9 @@ const Discord = require('discord.js')
 const client = new Discord.Client()
 
 const Keyv = require('keyv')
-const discord_email = new Keyv(CONFIG.DATABASE_STRING, { namespace: 'discord_email' })
-const code_email_temp = new Keyv(CONFIG.DATABASE_STRING, { namespace: 'code_email_temp' })
-const code_discord_temp = new Keyv(CONFIG.DATABASE_STRING, { namespace: 'code_discord_temp' })
+const discord_email = new Keyv(CONFIG.DATABASE_URL, { namespace: 'discord_email' })
+const code_email_temp = new Keyv(CONFIG.DATABASE_URL, { namespace: 'code_email_temp' })
+const code_discord_temp = new Keyv(CONFIG.DATABASE_URL, { namespace: 'code_discord_temp' })
 const ALPHANUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 code_discord_temp.clear()
