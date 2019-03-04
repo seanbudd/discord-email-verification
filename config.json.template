@@ -1,6 +1,6 @@
 {
     "DISCORD_LOGIN_API_TOKEN": "",
-    "DATABASE_STRING": "",
+    "DATABASE_URL": "",
     "FROM_EMAIL": "",
     "EMAIL_SUBJECT": "Discord Verification",
     "ROLE_NAME": "",
@@ -8,5 +8,10 @@
     "WELCOME_CHANNEL_ID": "",
     "MEMBER_JOIN_MESSAGE": "",
     "EMAIL_REGEX": ".*@.*",
-    "SMPT_JS_LOGIN_TOKEN": ""
+    "SMPT_JS_LOGIN_TOKEN": "",
+    "CRYPTO_JSON" : {
+        "ALGORITHM": "",
+        "ENCODING": "",
+        "MEMBER_ENCRYPT_KEY": ""
+    }
 }
