@@ -1,8 +1,4 @@
-let CONFIG = require('./config.json')
-// on production use process.env alternatively
-if (process.env.DISCORD_LOGIN_API_TOKEN) {
-  CONFIG = process.env
-}
+const CONFIG = process.env.DISCORD_LOGIN_API_TOKEN == undefined ? require('./config.json') : process.env
 
 const cryptoJSON = require('crypto-json')
 
