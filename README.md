@@ -32,24 +32,6 @@ Make a copy of config.json.template named config.json
     }
 }
 
-{
-    "DISCORD_LOGIN_API_TOKEN": "",
-    "DATABASE_URL": "",
-    "FROM_EMAIL": "",
-    "EMAIL_SUBJECT": "Discord Verification",
-    "ROLE_NAME": "",
-    "GUILD_ID": "",
-    "WELCOME_CHANNEL_ID": "",
-    "MEMBER_JOIN_MESSAGE": "",
-    "EMAIL_REGEX": ".*@.*",
-    "SMPT_JS_LOGIN_TOKEN": "",
-    "CRYPTO_JSON" : {
-        "ALGORITHM": "",
-        "ENCODING": "",
-        "MEMBER_ENCRYPT_KEY": ""
-    }
-}
-
 ```
 
 Make a copy of members.json.template named members.json. The value for the members key should contain an array of email addresses of those allowed to join your Discord server
