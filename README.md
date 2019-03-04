@@ -41,3 +41,7 @@ Make a copy of members.json.template named members.json. The value for the membe
 start the bot server by running
 
 `>>> node index.js`
+
+or
+
+`>>> npm start`
