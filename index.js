@@ -5,13 +5,13 @@ const cryptoJSON = require('crypto-json')
 const ENCRYPTED_MEMBERS = require('./members.json')
 
 const MEMBERS =
-  CONFIG.CRYPTO_JSON != undefined
+  CONFIG['CRYPTO_JSON.MEMBER_ENCRYPT_KEY'] != undefined
     ? cryptoJSON.decrypt(ENCRYPTED_MEMBERS, CONFIG['CRYPTO_JSON.MEMBER_ENCRYPT_KEY'], {
       encoding: CONFIG['CRYPTO_JSON.ENCODING'],
       keys: ['members'],
       algorithm: CONFIG['CRYPTO_JSON.ALGORITHM']
     }).members
-    : ENCRYPTED_MEMBERS
+    : ENCRYPTED_MEMBERS.members
 
 const { Email } = require('./smtp.js')
 
