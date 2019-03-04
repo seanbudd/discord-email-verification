@@ -1,5 +1,5 @@
 const CONFIG = require('./config.json')
-const MEMBERS = require('./members.json')
+const MEMBERS = require('./members.json').members
 
 const { Email } = require('./smtp.js')
 

@@ -28,4 +28,10 @@ Make a copy of config.json.template named config.json
 }
 ```
 
-Also requires a `members.json` which has keys that are each of your members valid email addresses
+Make a copy of members.json.template named members.json. The value for the members key should contain an array of email addresses of those allowed to join your Discord server
+
+# Hosting
+
+start the bot server by running
+
+`>>> node index.js`
