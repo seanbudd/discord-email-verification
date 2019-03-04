@@ -26,9 +26,9 @@ Make a copy of config.json.template named config.json. You can alternatively use
     "EMAIL_REGEX": ".*@.*", // regex you want to verify emails before sending, could be domain specific
     "SMPT_JS_LOGIN_TOKEN": "", // https://www.smtpjs.com/
     // https://www.npmjs.com/package/crypto-json to encrypt member data, optional
-    "CRYPTO_JSON.ALGORITHM": "aes256",
-    "CRYPTO_JSON.ENCODING": "hex",
-    "CRYPTO_JSON.MEMBER_ENCRYPT_KEY": ""
+    "CRYPTO_JSON_ALGORITHM": "aes256",
+    "CRYPTO_JSON_ENCODING": "hex",
+    "CRYPTO_JSON_MEMBER_ENCRYPT_KEY": ""
 }
 
 ```
