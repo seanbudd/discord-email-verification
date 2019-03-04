@@ -43,7 +43,9 @@ client.on('message', message => {
     if (message.content === '!verify') {
       message.author.createDM().then(dmchannel => dmchannel.send('Reply with your email for verification'))
     } else if (message.type === 'GUILD_MEMBER_JOIN') {
-      message.channel.send(MESSAGE_PREFIX + "Send '!verify' to access other channels")
+      message.channel
+        .send(MESSAGE_PREFIX + "Send '!verify' to access other channels")
+        .catch(reason => console.log(reason))
     }
   } else if (message.channel.guild == null) {
     if (new RegExp(CONFIG.EMAIL_REGEX).test(text)) {
@@ -52,11 +54,11 @@ client.on('message', message => {
         let code = makeid(6)
         code_email_temp.set(code, email_address, 10 * 60 * 1000)
         code_discord_temp.set(code, message.author.id, 10 * 60 * 1000)
-        sendEmail(email_address, code).then(
-          message.channel.send(MESSAGE_PREFIX + 'Check your email now! Reply with the code we sent you')
-        )
+        sendEmail(email_address, code)
+          .then(message.channel.send(MESSAGE_PREFIX + 'Check your email now! Reply with the code we sent you'))
+          .catch(reason => console.log(reason))
       } else {
-        message.channel.send(MESSAGE_PREFIX + CONFIG.MEMBER_JOIN_MESSAGE)
+        message.channel.send(MESSAGE_PREFIX + CONFIG.MEMBER_JOIN_MESSAGE).catch(reason => console.log(reason))
       }
     } else if (text.match(/^[a-zA-Z0-9]{6}$/)) {
       Promise.all([code_email_temp.get(text).then(), code_discord_temp.get(text)]).then(
@@ -68,6 +70,7 @@ client.on('message', message => {
             guild
               .fetchMember(message.author)
               .then(member => member.addRole(role).then(message.channel.send('You are now verified!')))
+              .catch(reason => console.log(reason))
           } else {
             message.channel.send(MESSAGE_PREFIX + "That code isn't right")
           }

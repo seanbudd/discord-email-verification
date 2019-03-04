@@ -1,3 +1,4 @@
 config.json
 members.json
 node_modules/**/*
+.regex
