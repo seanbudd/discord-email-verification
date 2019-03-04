@@ -10,7 +10,7 @@ Run `npm install .`
 
 # Config
 
-Make a copy of config.json.template named config.json
+Make a copy of config.json.template named config.json. You can alternatively use process.env for the same data.
 
 
 ```js

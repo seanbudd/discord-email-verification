@@ -1,4 +1,9 @@
-const CONFIG = require('./config.json')
+let CONFIG = require('./config.json')
+// on production use process.env alternatively
+if (process.env.DISCORD_LOGIN_API_TOKEN) {
+  CONFIG = process.env
+}
+
 const cryptoJSON = require('crypto-json')
 
 const ENCRYPTED_MEMBERS = require('./members.json')
@@ -77,7 +82,7 @@ client.on('message', message => {
 })
 
 // assuming we have a *.json list of members
-isMember = email_address => email_address in MEMBERS
+isMember = email_address => MEMBERS.indexOf(email_address) > -1
 
 // https://www.smtpjs.com/
 sendEmail = (email_address, code) =>
