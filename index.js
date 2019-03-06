@@ -5,11 +5,11 @@ const cryptoJSON = require('crypto-json')
 const ENCRYPTED_MEMBERS = require('./members.json')
 
 const MEMBERS =
-  CONFIG['CRYPTO_JSON_MEMBER_ENCRYPT_KEY'] != undefined
-    ? cryptoJSON.decrypt(ENCRYPTED_MEMBERS, CONFIG['CRYPTO_JSON_MEMBER_ENCRYPT_KEY'], {
-      encoding: CONFIG['CRYPTO_JSON_ENCODING'],
+  CONFIG.CRYPTO_JSON_MEMBER_ENCRYPT_KEY != undefined
+    ? cryptoJSON.decrypt(ENCRYPTED_MEMBERS, CONFIG.CRYPTO_JSON_MEMBER_ENCRYPT_KEY, {
+      encoding: CONFIG.CRYPTO_JSON_ENCODING,
       keys: ['members'],
-      algorithm: CONFIG['CRYPTO_JSON_ALGORITHM']
+      algorithm: CONFIG.CRYPTO_JSON_ALGORITHM
     }).members
     : ENCRYPTED_MEMBERS.members
 
