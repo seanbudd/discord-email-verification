@@ -38,6 +38,7 @@ client.on('message', message => {
   const MESSAGE_PREFIX = 'Hey ' + message.author.username + '! '
   let text = message.content.trim()
   if (message.channel.id === CONFIG.WELCOME_CHANNEL_ID) {
+    const is_self_join_alias = text in CONFIG.SELF_JOIN_ALIASES
     if (message.content === '!verify') {
       message.author
         .createDM()
@@ -48,6 +49,46 @@ client.on('message', message => {
     } else if (message.type === 'GUILD_MEMBER_JOIN') {
       message.channel
         .send(MESSAGE_PREFIX + "Send '!verify' to access other channels")
+        .catch(reason => console.log(reason))
+    }
+    else if (text.startsWith(CONFIG.SELF_JOIN_COMMAND) || is_self_join_alias) {
+      let guild = client.guilds.get(CONFIG.GUILD_ID)
+      let msg = is_self_join_alias ? CONFIG.SELF_JOIN_ALIASES[text] : text
+      let msg_roles = msg.replace('!join', '').trim()
+
+      guild
+        .fetchMember(message.author)
+        .then(member => {
+          if (msg_roles === '') {
+            message.channel.send(`Please specify the role you would like to join`).catch(reason => console.log(reason))
+          } else {
+            let verified_role = role = guild.roles.find(role => role.name === CONFIG.VERIFIED_ROLE_NAME)
+            if (!CONFIG.SELF_JOIN_REQUIRE_VERIFIED || member.roles.has(verified_role.id)) {
+              for (let msg_role of msg_roles.split(',').map(role_name => role_name.trim())) {
+                const guild_role = guild.roles.find(role => role.name === msg_role)
+                if (guild_role) {
+                  if (CONFIG.SELF_JOIN_ROLE_NAMES.includes(msg_role)) {
+                    if (member.roles.has(guild_role.id)) {
+                      member
+                        .removeRole(guild_role)
+                        .then(message.channel.send(`Left role '${msg_role}'`).catch(reason => console.log(reason)))
+                    } else {
+                      member
+                        .addRole(guild_role)
+                        .then(message.channel.send(`Joined role '${msg_role}'`).catch(reason => console.log(reason)))
+                    }
+                  } else {
+                    message.channel.send(`You are not allowed to join '${msg_role}'`).catch(reason => console.log(reason))
+                  }
+                } else {
+                  message.channel.send(`Cannot find role '${msg_role}'`).catch(reason => console.log(reason))
+                }
+              }
+            } else {
+              message.channel.send(`You need to be verified to join roles`).catch(reason => console.log(reason))
+            }
+          }
+        })
         .catch(reason => console.log(reason))
     }
   } else if (message.channel.guild == null) {
@@ -73,7 +114,7 @@ client.on('message', message => {
           if (email_address && discord_id && discord_id === message.author.id) {
             discord_email.set(message.author.id, email_address)
             let guild = client.guilds.get(CONFIG.GUILD_ID)
-            let role = guild.roles.find(role => role.name === CONFIG.ROLE_NAME)
+            let role = guild.roles.find(role => role.name === CONFIG.VERIFIED_ROLE_NAME)
             guild
               .fetchMember(message.author)
               .then(member =>
