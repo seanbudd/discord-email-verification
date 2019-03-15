@@ -5,13 +5,13 @@ const cryptoJSON = require('crypto-json')
 const ENCRYPTED_MEMBERS = require('./members.json')
 
 const MEMBERS =
-  CONFIG.CRYPTO_JSON_MEMBER_ENCRYPT_KEY != undefined
+  (CONFIG.CRYPTO_JSON_MEMBER_ENCRYPT_KEY != undefined
     ? cryptoJSON.decrypt(ENCRYPTED_MEMBERS, CONFIG.CRYPTO_JSON_MEMBER_ENCRYPT_KEY, {
       encoding: CONFIG.CRYPTO_JSON_ENCODING,
       keys: ['members'],
       algorithm: CONFIG.CRYPTO_JSON_ALGORITHM
     }).members
-    : ENCRYPTED_MEMBERS.members
+    : ENCRYPTED_MEMBERS.members).map(email => email.toLowerCase())
 
 const { Email } = require('./smtp.js')
 
@@ -91,8 +91,7 @@ client.on('message', message => {
   }
 })
 
-// assuming we have a *.json list of members
-isMember = email_address => MEMBERS.indexOf(email_address) > -1
+isMember = email_address => MEMBERS.indexOf(email_address.toLowerCase()) > -1
 
 // https://www.smtpjs.com/
 sendEmail = (email_address, code) =>
