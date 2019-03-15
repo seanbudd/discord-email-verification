@@ -50,7 +50,7 @@ client.on('message', message => {
         .send(MESSAGE_PREFIX + "Send '!verify' to access other channels")
         .catch(reason => console.log(reason))
     }
-    else if (new RegExp(`^${CONFIG.SELF_JOIN_JOIN_COMMAND}|${CONFIG.SELF_JOIN_LEAVE_COMMAND}`).test(text)) {
+    else if (new RegExp(`^${CONFIG.SELF_JOIN_JOIN_COMMAND}`).test(text)) {
       const guild = client.guilds.get(CONFIG.GUILD_ID)
       guild
         .fetchMember(message.author)
