@@ -50,6 +50,80 @@ client.on('message', message => {
         .send(MESSAGE_PREFIX + "Send '!verify' to access other channels")
         .catch(reason => console.log(reason))
     }
+    else if (new RegExp(`^${CONFIG.SELF_JOIN_JOIN_COMMAND}`).test(text)) {
+      const guild = client.guilds.get(CONFIG.GUILD_ID)
+      guild
+        .fetchMember(message.author)
+        .then(member => {
+          let verified_role = guild.roles.find(role => role.name === CONFIG.VERIFIED_ROLE_NAME)
+          if (!CONFIG.SELF_JOIN_REQUIRE_VERIFIED || member.roles.has(verified_role.id)) {
+            const regexRole = new RegExp('(?<!!)(?!\\s)\\b.+$', 'g')
+            const msg_role = regexRole.exec(text)
+            if (msg_role === null) {
+              message.channel.send(`Please specify the role you would like to join`).catch(reason => console.log(reason))
+            } else {
+              const role_name = msg_role[0]
+              const guild_role = guild.roles.find(role => role.name === role_name)
+              if (guild_role) {
+                if (CONFIG.SELF_JOIN_ROLE_NAMES.split(/\b\s*,\s*\b/g).includes(role_name)) {
+                  if (member.roles.has(guild_role.id)) {
+                    message.channel.send(`You are already in role '${role_name}'`).catch(reason => console.log(reason))
+                  } else {
+                    member
+                      .addRole(guild_role)
+                      .then(message.channel.send(`Joined role '${role_name}'`).catch(reason => console.log(reason)))
+                  }
+                } else {
+                  message.channel.send(`You are not allowed to join '${role_name}'`).catch(reason => console.log(reason))
+                }
+              } else {
+                message.channel.send(`Cannot find role '${role_name}'`).catch(reason => console.log(reason))
+              }
+            }
+          } else {
+            message.channel.send(`You need to be verified to join roles`).catch(reason => console.log(reason))
+          }
+        })
+        .catch(reason => console.log(reason))
+    }
+    else if (new RegExp(`^${CONFIG.SELF_JOIN_LEAVE_COMMAND}`).test(text)) {
+      const guild = client.guilds.get(CONFIG.GUILD_ID)
+      guild
+        .fetchMember(message.author)
+        .then(member => {
+          let verified_role = guild.roles.find(role => role.name === CONFIG.VERIFIED_ROLE_NAME)
+          if (!CONFIG.SELF_JOIN_REQUIRE_VERIFIED || member.roles.has(verified_role.id)) {
+            const regexRole = new RegExp('(?<!!)(?!\\s)\\b.+$', 'g')
+            const msg_role = regexRole.exec(text)
+            if (msg_role === null) {
+              message.channel.send(`Please specify the role you would like to join`).catch(reason => console.log(reason))
+            } else {
+              const role_name = msg_role[0]
+              const guild_role = guild.roles.find(role => role.name === role_name)
+              if (guild_role) {
+                if (CONFIG.SELF_JOIN_ROLE_NAMES.split(/\b\s*,\s*\b/g).includes(role_name)) {
+                  if (member.roles.has(guild_role.id)) {
+                    member
+                      .removeRole(guild_role)
+                      .then(message.channel.send(`Left role '${role_name}'`).catch(reason => console.log(reason)))
+                  } else {
+                    member
+                      .removeRole(guild_role)
+                      .then(message.channel.send(`You are not in role '${role_name}'`).catch(reason => console.log(reason)))
+                  }
+                } else {
+                  message.channel.send(`You are not allowed to leave '${role_name}'`).catch(reason => console.log(reason))
+                }
+              } else {
+                message.channel.send(`Cannot find role '${role_name}'`).catch(reason => console.log(reason))
+              }
+            }
+          } else {
+            message.channel.send(`You need to be verified to leave roles`).catch(reason => console.log(reason))
+          }
+        })
+        .catch(reason => console.log(reason))
+    }
   } else if (message.channel.guild == null) {
     if (new RegExp(CONFIG.EMAIL_REGEX).test(text)) {
       let email_address = text
@@ -73,7 +147,7 @@ client.on('message', message => {
           if (email_address && discord_id && discord_id === message.author.id) {
             discord_email.set(message.author.id, email_address)
             let guild = client.guilds.get(CONFIG.GUILD_ID)
-            let role = guild.roles.find(role => role.name === CONFIG.ROLE_NAME)
+            let role = guild.roles.find(role => role.name === CONFIG.VERIFIED_ROLE_NAME)
             guild
               .fetchMember(message.author)
               .then(member =>

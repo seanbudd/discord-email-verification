@@ -3,7 +3,7 @@
     "DATABASE_URL": "",
     "FROM_EMAIL": "",
     "EMAIL_SUBJECT": "Discord Verification",
-    "ROLE_NAME": "",
+    "VERIFIED_ROLE_NAME": "",
     "GUILD_ID": "",
     "WELCOME_CHANNEL_ID": "",
     "MEMBER_JOIN_MESSAGE": "",
@@ -11,5 +11,9 @@
     "SMPT_JS_LOGIN_TOKEN": "",
     "CRYPTO_JSON_ALGORITHM": "aes256",
     "CRYPTO_JSON_ENCODING": "hex",
-    "CRYPTO_JSON_MEMBER_ENCRYPT_KEY": ""
+    "CRYPTO_JSON_MEMBER_ENCRYPT_KEY": "",
+    "SELF_JOIN_JOIN_COMMAND": "!join",
+    "SELF_JOIN_LEAVE_COMMAND": "!leave",
+    "SELF_JOIN_REQUIRE_VERIFIED": true,
+    "SELF_JOIN_ROLE_NAMES": ""
 }
