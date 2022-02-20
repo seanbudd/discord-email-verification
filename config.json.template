@@ -1,15 +1,14 @@
 {
+    "DATABASE_URL": "sqlite://example.db",
     "DISCORD_LOGIN_API_TOKEN": "",
-    "DATABASE_URL": "",
-    "FROM_EMAIL": "",
-    "EMAIL_SUBJECT": "Discord Verification",
-    "ROLE_NAME": "",
+    "ROLE_NAME": "Member",
+    "CLIENT_ID": "",
     "GUILD_ID": "",
     "WELCOME_CHANNEL_ID": "",
-    "MEMBER_JOIN_MESSAGE": "",
+    "MEMBER_JOIN_MESSAGE": "Email address cannot be found, join via , otherwise ask for help in #welcome",
+    "EMAIL_SUBJECT": "Discord Verification",
+    "FROM_EMAIL": "",
     "EMAIL_REGEX": ".*@.*",
-    "SMPT_JS_LOGIN_TOKEN": "",
-    "CRYPTO_JSON_ALGORITHM": "aes256",
-    "CRYPTO_JSON_ENCODING": "hex",
-    "CRYPTO_JSON_MEMBER_ENCRYPT_KEY": ""
+    "EMAIL_HOST": "",
+    "EMAIL_PWD": ""
 }

@@ -1,22 +1,21 @@
 const CONFIG = process.env.DISCORD_LOGIN_API_TOKEN == undefined ? require('./config.json') : process.env
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const cryptoJSON = require('crypto-json')
 
-const ENCRYPTED_MEMBERS = require('./members.json')
-
-const MEMBERS =
-  (CONFIG.CRYPTO_JSON_MEMBER_ENCRYPT_KEY != undefined
-    ? cryptoJSON.decrypt(ENCRYPTED_MEMBERS, CONFIG.CRYPTO_JSON_MEMBER_ENCRYPT_KEY, {
-      encoding: CONFIG.CRYPTO_JSON_ENCODING,
-      keys: ['members'],
-      algorithm: CONFIG.CRYPTO_JSON_ALGORITHM
-    }).members
-    : ENCRYPTED_MEMBERS.members).map(email => email.toLowerCase())
+const MEMBERS = ENCRYPTED_MEMBERS = require('./members.json')
 
 const { Email } = require('./smtp.js')
 
 const Discord = require('discord.js')
-const client = new Discord.Client()
+const client = new Discord.Client({
+  intents: [
+    Discord.Intents.FLAGS.GUILD_MESSAGES,
+    Discord.Intents.FLAGS.DIRECT_MESSAGES,
+    Discord.Intents.FLAGS.GUILDS,
+  ]
+})
 
 const Keyv = require('keyv')
 const discord_email = new Keyv(CONFIG.DATABASE_URL, { namespace: 'discord_email' })
@@ -29,61 +28,82 @@ code_email_temp.clear()
 
 client.once('ready', () => console.log('Starting!'))
 
-client.login(CONFIG.DISCORD_LOGIN_API_TOKEN).then(console.log('Logged In!'))
+const rest = new REST({ version: '9' }).setToken(CONFIG.DISCORD_LOGIN_API_TOKEN);
+rest.put(
+  Routes.applicationGuildCommands(CONFIG.CLIENT_ID, CONFIG.GUILD_ID),
+  {
+    body: [
+      new SlashCommandBuilder()
+        .setName('verify')
+        .setDescription('Verify and access the discord using your email address')
+        .addStringOption(option =>
+          option.setName('email')
+            .setDescription('The email address you signed up with')
+            .setRequired(true)
+        ).toJSON(),
+      new SlashCommandBuilder()
+        .setName('emailtoken')
+        .setDescription('Confirm your email address with the token generated using /verify')
+        .addStringOption(option =>
+          option.setName('token')
+            .setDescription('The token sent to your email address from using /verify')
+            .setRequired(true)
+        ).toJSON(),
+    ]
+  },
+)
 
-client.on('message', message => {
-  if (message.author.bot) {
-    return
-  }
-  const MESSAGE_PREFIX = 'Hey ' + message.author.username + '! '
-  let text = message.content.trim()
-  if (message.channel.id === CONFIG.WELCOME_CHANNEL_ID) {
-    if (message.content === '!verify') {
-      message.author
-        .createDM()
-        .then(dmchannel =>
-          dmchannel.send('Reply with your email for verification').catch(reason => console.log(reason))
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isCommand()) return;
+
+  if (interaction.commandName === 'verify') {
+    const MESSAGE_PREFIX = 'Hey ' + interaction.member.nickname + '!\n'
+    let email_address = interaction.options.getString("email")
+    if (new RegExp(CONFIG.EMAIL_REGEX).test(email_address) && isMember(email_address)) {
+      let code = makeid(6)
+      code_email_temp.set(code, email_address, 10 * 60 * 1000)
+      code_discord_temp.set(code, interaction.member.id, 10 * 60 * 1000)
+      sendEmail(email_address, code)
+        .then(
+          interaction.reply({
+            content: MESSAGE_PREFIX + 'Check your email now to confirm your email with the code we sent you.',
+            ephemeral: true
+          }).then(
+            interaction.followUp(
+              {
+                content: "Confirm the token by sending /emailtoken, example: `/emailtoken 123456`",
+                ephemeral: true
+              }
+            )
+          )
         )
         .catch(reason => console.log(reason))
-    } else if (message.type === 'GUILD_MEMBER_JOIN') {
-      message.channel
-        .send(MESSAGE_PREFIX + "Send '!verify' to access other channels")
-        .catch(reason => console.log(reason))
+    } else {
+      interaction.reply({
+        content: MESSAGE_PREFIX + CONFIG.MEMBER_JOIN_MESSAGE,
+        ephemeral: true
+      })
+
     }
-  } else if (message.channel.guild == null) {
-    if (new RegExp(CONFIG.EMAIL_REGEX).test(text)) {
-      let email_address = text
-      if (isMember(email_address)) {
-        let code = makeid(6)
-        code_email_temp.set(code, email_address, 10 * 60 * 1000)
-        code_discord_temp.set(code, message.author.id, 10 * 60 * 1000)
-        sendEmail(email_address, code)
-          .then(
-            message.channel
-              .send(MESSAGE_PREFIX + 'Check your email now! Reply with the code we sent you')
-              .catch(reason => console.log(reason))
-          )
-          .catch(reason => console.log(reason))
-      } else {
-        message.channel.send(MESSAGE_PREFIX + CONFIG.MEMBER_JOIN_MESSAGE).catch(reason => console.log(reason))
-      }
-    } else if (text.match(/^[a-zA-Z0-9]{6}$/)) {
-      Promise.all([code_email_temp.get(text), code_discord_temp.get(text)])
+  }
+  else if (interaction.commandName === 'emailtoken') {
+    let token = interaction.options.getString("token")
+    if (token.match(/^[a-zA-Z0-9]{6}$/)) {
+      Promise.all([code_email_temp.get(token), code_discord_temp.get(token)])
         .then(([email_address, discord_id]) => {
-          if (email_address && discord_id && discord_id === message.author.id) {
-            discord_email.set(message.author.id, email_address)
-            let guild = client.guilds.get(CONFIG.GUILD_ID)
-            let role = guild.roles.find(role => role.name === CONFIG.ROLE_NAME)
-            guild
-              .fetchMember(message.author)
-              .then(member =>
-                member
-                  .addRole(role)
-                  .then(message.channel.send('You are now verified!').catch(reason => console.log(reason)))
-              )
-              .catch(reason => console.log(reason))
+          if (email_address && discord_id && discord_id === interaction.member.id) {
+            discord_email.set(interaction.member.id, email_address)
+            let role = interaction.guild.roles.cache.find(role => role.name === CONFIG.ROLE_NAME)
+            interaction.member.roles.add(role)
+            interaction.reply({
+              content: 'You are now verified!',
+              ephemeral: true
+            })
           } else {
-            message.channel.send(MESSAGE_PREFIX + "That code isn't right")
+            interaction.reply({
+              content: "That code isn't right",
+              ephemeral: true
+            })
           }
         })
         .catch(reason => console.log(reason))
@@ -91,12 +111,30 @@ client.on('message', message => {
   }
 })
 
-isMember = email_address => MEMBERS.indexOf(email_address.toLowerCase()) > -1
+
+client.login(CONFIG.DISCORD_LOGIN_API_TOKEN).then(console.log('Logged In!'))
+client.on('messageCreate', message => {
+  if (message.author.bot) {
+    return
+  }
+  const MESSAGE_PREFIX = 'Hey ' + message.author.username + '! '
+  if (message.channel.id === CONFIG.WELCOME_CHANNEL_ID) {
+    if (message.type === 'GUILD_MEMBER_JOIN') {
+      message.channel
+        .send(MESSAGE_PREFIX + "Send '!verify' to access other channels")
+        .catch(reason => console.log(reason))
+    }
+  }
+})
+
+isMember = email_address => MEMBERS.members.indexOf(email_address.toLowerCase()) > -1
 
 // https://www.smtpjs.com/
 sendEmail = (email_address, code) =>
   Email.send({
-    SecureToken: CONFIG.SMPT_JS_LOGIN_TOKEN,
+    Host: CONFIG.EMAIL_HOST,
+    Username: CONFIG.FROM_EMAIL,
+    Password: CONFIG.EMAIL_PWD,
     To: email_address,
     From: CONFIG.FROM_EMAIL,
     Subject: CONFIG.EMAIL_SUBJECT,

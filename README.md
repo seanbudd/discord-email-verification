@@ -4,7 +4,7 @@ Built on [SMPT.js](https://www.smtpjs.com/), [KeyV](https://github.com/lukechild
 
 # Setup
 
-Requires node/npm
+Requires node 16.11.0+, npm 8.0.0 and sqlite.
 
 Run `npm install .`
 
@@ -15,22 +15,19 @@ Make a copy of config.json.template named config.json. You can alternatively use
 
 ```js
 {
+    "DATABASE_URL": "sqlite://example.db", // sqlite db
     "DISCORD_LOGIN_API_TOKEN": "", // https://discordjs.guide/preparations/setting-up-a-bot-application.html#your-token
-    "DATABASE_URL": "", // any database string that keyv https://discordjs.guide/keyv/#installation
-    "FROM_EMAIL": "", // Email you want as a reply to
-    "EMAIL_SUBJECT": "Discord Verification", // Email subject you want
-    "ROLE_NAME": "", // name of the role people get once verified
-    "GUILD_ID": "", // your channel/guild ID
-    "WELCOME_CHANNEL_ID": "", // the welcome channel you want the bot to operate on
-    "MEMBER_JOIN_MESSAGE": "", // the message you want people to receive if they aren't in your members.json
-    "EMAIL_REGEX": ".*@.*", // regex you want to verify emails before sending, could be domain specific
-    "SMPT_JS_LOGIN_TOKEN": "", // https://www.smtpjs.com/
-    // https://www.npmjs.com/package/crypto-json to encrypt member data, optional
-    "CRYPTO_JSON_ALGORITHM": "aes256",
-    "CRYPTO_JSON_ENCODING": "hex",
-    "CRYPTO_JSON_MEMBER_ENCRYPT_KEY": ""
+    "ROLE_NAME": "Member",
+    "CLIENT_ID": "", // copy from the bot account (eg DMs window icon)
+    "GUILD_ID": "", // copy from server
+    "WELCOME_CHANNEL_ID": "", // copy from channel
+    "MEMBER_JOIN_MESSAGE": "Email address cannot be found, join via , otherwise ask for help in #welcome",
+    "EMAIL_SUBJECT": "Discord Verification",
+    "FROM_EMAIL": "",
+    "EMAIL_REGEX": ".*@.*",
+    "EMAIL_HOST": "", // SMTP host
+    "EMAIL_PWD": ""
 }
-
 ```
 
 Make a copy of members.json.template named members.json. The value for the members key should contain an array of email addresses of those allowed to join your Discord server
